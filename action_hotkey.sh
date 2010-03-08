@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Copyright (c) 2010 The Chromium OS Authors. All rights reserved.
+# Copyright (c) 2009 The Chromium OS Authors. All rights reserved.
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
@@ -13,7 +13,9 @@
 USER_ID="$(/usr/bin/id -u chronos)"
 MINIJAIL_FLAGS="--use-capabilities"
 
-export PULSE_RUNTIME_PATH=/var/run/pulse
+# Needed by amixer to so that the alsa pulseaudio plugin, can locate the
+# correct ${HOME}/.pulse directory.
+export HOME=/home/chronos/user
 
 case "$3" in
   00000013)  # Toggle sound
