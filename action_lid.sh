@@ -4,6 +4,12 @@
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
+# Shutdown instead of sleeping if no one is logged in
+if ! test -f /var/run/state/logged-in; then
+  shutdown -h now
+  exit 0
+fi
+
 # On lid close:
 # - lock the screen
 export HOME=/home/chronos
