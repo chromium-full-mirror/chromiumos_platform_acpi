@@ -10,6 +10,12 @@ if ! test -f /var/run/state/logged-in; then
   exit 0
 fi
 
+# Check whether the lid is closed before proceeding
+grep -q open /proc/acpi/button/lid/*/state
+if [ $? = 0 ]; then
+  exit 0
+fi
+
 # On lid close:
 # - lock the screen
 export HOME=/home/chronos
