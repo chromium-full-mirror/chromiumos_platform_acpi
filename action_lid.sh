@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Copyright (c) 2009 The Chromium OS Authors. All rights reserved.
+# Copyright (c) 2010 The Chromium OS Authors. All rights reserved.
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
@@ -20,6 +20,12 @@ fi
 # - lock the screen
 export HOME=/home/chronos
 /usr/bin/xscreensaver-command -l
+
+# - sleep for a bit to give the window manager time to draw the xscreensaver
+#   window to the screen -- see http://crosbug.com/2250.
+# TODO: Remove this hack once we have a better solution in place that adds
+# some coordination between the screen locker and the window manager.
+sleep 0.5
 
 # - suspend the cryptohome device
 #CRYPTOHOME=/dev/mapper/cryptohome
