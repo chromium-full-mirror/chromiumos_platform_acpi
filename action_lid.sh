@@ -4,17 +4,23 @@
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
+logger "action_lid.sh: " `cat /proc/acpi/button/lid/*/state`
+
+grep -q "closed" /proc/acpi/button/lid/*/state
+if [ $? != 0 ]; then
+  logger "action_lid.sh: lid is not closed. Bailing out."
+  exit 0
+fi
+
+
 # Shutdowns instead of sleeping if no one is logged in.
 if ! test -f /var/run/state/logged-in; then
+  logger "action_lid.sh: lid closed. Shutting down since no one is logged in"
   shutdown -h now
   exit 0
 fi
 
-# Checks whether the lid is closed before proceeding.
-grep -q open /proc/acpi/button/lid/*/state
-if [ $? = 0 ]; then
-  exit 0
-fi
+logger "action_lid.sh: lid closed. Going to suspend-to-RAM state"
 
 # On lid close:
 # - locks the screen
