@@ -27,6 +27,10 @@ logger "action_lid.sh: lid closed. Going to suspend-to-RAM state"
 export HOME=/home/chronos
 /usr/bin/xscreensaver-command -l
 
+# - logs the time going to suspend (no-op if no RTC).
+cp /sys/class/rtc/rtc0/since_epoch /var/log/metrics/suspend-to-ram-time \
+  2> /dev/null || true
+
 # - announces the event
 /usr/bin/dbus-send --type=signal --system / \
   org.chromium.Power.Manager.PowerStateChanged string:mem
@@ -50,7 +54,10 @@ echo -n mem > /sys/power/state
 
 # - announces the event
 /usr/bin/dbus-send --type=signal --system / \
-  org.chromium.Power.Manager.PowerStateChanged string:on
+  org.chromium.Power.Manager.PowerStateChanged string:on &
+
+# - sends UMA metrics on resume
+/usr/bin/send_metrics_on_resume
 
 # - resumes cryptohome device
 #/usr/bin/test -b $CRYPTOHOME && /sbin/dmsetup resume $CRYPTOHOME
